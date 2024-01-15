@@ -1,4 +1,4 @@
-import { FarcasterAccount } from "@/types/FarcasterAccount";
+import { FarcasterAccount } from "@/types/farcaster-account.types";
 import {
     Table,
     TableBody,
@@ -22,13 +22,13 @@ function AccountsTable({ accounts }: { accounts: FarcasterAccount[] }) {
             </TableHead>
             <TableBody>
                 {accounts.map((account) => (
-                    <TableRow key={account.address}>
+                    <TableRow key={account.fid}>
                         <TableCell>{account.displayName}</TableCell>
                         <TableCell>{account.username}</TableCell>
                         <TableCell className="font-medium">
                             {account.fid}
                         </TableCell>
-                        <TableCell>{account.address}</TableCell>
+                        <TableCell>{account.custodyAddress}</TableCell>
                         <TableCell className="text-zinc-500">
                             {account.signerUUID}
                         </TableCell>
