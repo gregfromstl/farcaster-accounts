@@ -1,6 +1,7 @@
-import { Inter } from "next/font/google";
 import "./globals.css";
+import { Inter } from "next/font/google";
 import { Metadata } from "next/types";
+import { Toaster } from "react-hot-toast";
 import Web3Wrapper from "@/components/Web3Wrapper";
 import Image from "next/image";
 import ConnectWalletButton from "@/components/ConnectWalletButton";
@@ -23,6 +24,12 @@ export default function RootLayout({
                 <body
                     className={`w-screen px-8 overflow-x-hidden max-w-7xl overflow-y-scroll h-screen mx-auto ${inter.className}`}
                 >
+                    <Toaster
+                        toastOptions={{
+                            className: "border rounded-md",
+                            position: "top-right",
+                        }}
+                    />
                     <div className="w-full py-4 justify-between flex items-center">
                         <span className="flex gap-2 items-center text-2xl font-bold">
                             <Image

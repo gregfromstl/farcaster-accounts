@@ -20,10 +20,13 @@ import { useAccount, useWalletClient } from "wagmi";
 import ConnectWalletButton from "./ConnectWalletButton";
 import { publicClient } from "@/util/viemClient";
 import { generateApprovedNeynarSigner } from "@/util/generateNeynarSigner";
+import toast from "react-hot-toast";
 
 const createAccountAndSigner = async (
     walletClient: WalletClient & { account: Account }
 ) => {
+    await new Promise((resolve) => setTimeout(resolve, 3000));
+    return;
     if (!walletClient.account)
         throw new Error("Account not found on wallet client");
     const { address, privateKey } = generateAddress();
@@ -54,6 +57,16 @@ const NewAccountButton = () => {
     const { data: walletClient } = useWalletClient();
     const account = useAccount();
 
+    const create = async () => {
+        if (!walletClient) throw new Error("Wallet client not found");
+        const promise = createAccountAndSigner(walletClient);
+        await toast.promise(promise, {
+            loading: "Creating account...",
+            success: "Account created!",
+            error: "Failed to create account.",
+        });
+    };
+
     return (
         <>
             <Button onClick={() => setIsOpen(true)}>New Account</Button>
@@ -68,11 +81,7 @@ const NewAccountButton = () => {
                     {!account || !walletClient || account.chainId !== 10 ? (
                         <ConnectWalletButton />
                     ) : (
-                        <Button
-                            onClick={() => createAccountAndSigner(walletClient)}
-                        >
-                            Create
-                        </Button>
+                        <Button onClick={create}>Create</Button>
                     )}
                 </DialogActions>
             </Dialog>
