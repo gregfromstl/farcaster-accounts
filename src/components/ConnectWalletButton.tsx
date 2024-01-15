@@ -1,5 +1,7 @@
 "use client";
 import { Button } from "@components/button";
+import { useEffect } from "react";
+import { useState } from "react";
 import {
     useAccount,
     useChainId,
@@ -10,10 +12,17 @@ import {
 import { injected } from "wagmi/connectors";
 
 const ConnectWalletButton = () => {
+    const [isReady, setIsReady] = useState(false);
+
     const { connect } = useConnect();
     const account = useAccount();
-
     const { switchChain } = useSwitchChain();
+
+    useEffect(() => {
+        setIsReady(true);
+    }, []);
+
+    if (!isReady) return <></>;
 
     if (!account) {
         return (
