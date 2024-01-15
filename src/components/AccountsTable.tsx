@@ -1,4 +1,4 @@
-import { FarcasterAccount } from "@/types/farcaster-account.types";
+import { FarcasterUserAccount } from "@/types/farcaster-account.types";
 import {
     Table,
     TableBody,
@@ -8,7 +8,7 @@ import {
     TableRow,
 } from "@components/table";
 
-function AccountsTable({ accounts }: { accounts: FarcasterAccount[] }) {
+function AccountsTable({ accounts }: { accounts: FarcasterUserAccount[] }) {
     return (
         <Table className="w-full">
             <TableHead>

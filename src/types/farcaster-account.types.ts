@@ -1,11 +1,19 @@
-import { Address, Hex } from "viem";
+import { z } from "zod";
+import { getAddress } from "viem";
 
-export type FarcasterAccount = {
-    custodyAddress: Address;
-    privateKey: Hex;
-    fid: string;
-    signerUUID?: string;
-    username?: string;
-    profileImage?: string;
-    displayName?: string;
-};
+export const FarcasterAccountSchema = z.object({
+    custodyAddress: z.string().refine((s) => getAddress(s)),
+    privateKey: z.string(),
+    fid: z.number(),
+    signerUUID: z.string().optional(),
+});
+
+export type FarcasterAccount = z.infer<typeof FarcasterAccountSchema>;
+
+export const FarcasterUserAccountSchema = FarcasterAccountSchema.extend({
+    username: z.string().optional(),
+    profileImage: z.string().url().optional(),
+    displayName: z.string().optional(),
+});
+
+export type FarcasterUserAccount = z.infer<typeof FarcasterUserAccountSchema>;

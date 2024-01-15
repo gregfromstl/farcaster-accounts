@@ -1,4 +1,3 @@
-import { Row } from "@/types/database-helpers.types";
 import { Database } from "@/types/database.types";
 import { SupabaseClient } from "@supabase/supabase-js";
 
