@@ -30,6 +30,12 @@ const ConnectWalletButton = () => {
             </Button>
         );
     }
+
+    return (
+        <div>
+            {account.address?.slice(0, 6)}...{account.address?.slice(-4)}
+        </div>
+    );
 };
 
 export default ConnectWalletButton;
