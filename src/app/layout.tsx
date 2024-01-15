@@ -21,9 +21,9 @@ export default function RootLayout({
         <html lang="en" className="light">
             <Web3Wrapper>
                 <body
-                    className={`w-screen max-w-7xl overflow-y-scroll h-screen mx-auto ${inter.className}`}
+                    className={`w-screen px-8 overflow-x-hidden max-w-7xl overflow-y-scroll h-screen mx-auto ${inter.className}`}
                 >
-                    <div className="w-full p-4 px-8 justify-between flex items-center">
+                    <div className="w-full py-4 justify-between flex items-center">
                         <span className="flex gap-2 items-center text-2xl font-bold">
                             <Image
                                 src="/farcaster.svg"

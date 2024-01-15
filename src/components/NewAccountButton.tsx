@@ -26,7 +26,7 @@ const createAccountAndSigner = async (
 ) => {
     if (!walletClient.account)
         throw new Error("Account not found on wallet client");
-    const { mnemonic, address, privateKey } = generateAddress();
+    const { address, privateKey } = generateAddress();
     const account = privateKeyToAccount(privateKey);
 
     const price = await getAccountPrice();
