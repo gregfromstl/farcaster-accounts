@@ -28,7 +28,6 @@ class AdminDatabaseClient extends DatabaseClient {
             .insert(insert)
             .select()
             .single();
-        console.log(result);
         if (result.error) {
             throw result.error;
         }
