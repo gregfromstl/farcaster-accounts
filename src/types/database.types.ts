@@ -61,6 +61,21 @@ export interface Database {
         }
         Relationships: []
       }
+      settings: {
+        Row: {
+          neynar_api_key: string | null
+          user: string
+        }
+        Insert: {
+          neynar_api_key?: string | null
+          user: string
+        }
+        Update: {
+          neynar_api_key?: string | null
+          user?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

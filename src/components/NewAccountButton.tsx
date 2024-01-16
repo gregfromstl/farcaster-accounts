@@ -24,12 +24,19 @@ import toast from "react-hot-toast";
 import { FarcasterAccount } from "@/types/farcaster-account.types";
 import axios from "axios";
 import { User, usePrivy } from "@privy-io/react-auth";
+import { PlusIcon } from "@heroicons/react/24/solid";
 
 const createAccountAndSigner = async (
     walletClient: WalletClient & { account: Account },
     user: User,
     authToken: string
 ): Promise<FarcasterAccount> => {
+    const settings = await axios.get("/api/settings", {
+        headers: {
+            Authorization: `Bearer ${authToken}`,
+        },
+    });
+    console.log(settings.data);
     if (!walletClient.account)
         throw new Error("Account not found on wallet client");
     // const { address, privateKey } = generateAddress();
@@ -46,10 +53,15 @@ const createAccountAndSigner = async (
     //     hash: txHash,
     // });
     // const fid = await generateFarcasterAccount(account);
-
+    // const settings = await axios.get("/api/settings", {
+    // 	headers: {
+    // 		Authorization: `Bearer ${authToken}`,
+    // 	},
+    // });
     // const signerUUID = await generateApprovedNeynarSigner(
     //     account,
-    //     walletClient
+    //     walletClient,
+    // 	settings.data.neynar_api_key
     // );
     const fid = 10;
     const signerUUID = "0x123";
@@ -59,9 +71,9 @@ const createAccountAndSigner = async (
     const farcasterAccount = {
         user: user.id,
         fid,
-        signerUUID,
-        privateKey,
-        custodyAddress: address,
+        signer_uuid: signerUUID,
+        private_key: privateKey,
+        custody_address: address,
     };
     await axios.post("/api/accounts", farcasterAccount, {
         headers: {
@@ -103,10 +115,16 @@ const NewAccountButton = () => {
 
     return (
         <>
-            <Button onClick={() => setIsOpen(true)}>New Account</Button>
+            <Button onClick={() => setIsOpen(true)}>
+                <PlusIcon />
+                New Account
+            </Button>
             <Dialog open={isOpen} onClose={setIsOpen}>
                 <DialogTitle>Generate a new account</DialogTitle>
-                <DialogDescription></DialogDescription>
+                <DialogDescription>
+                    After generating the account, you'll be able to edit its
+                    profile.
+                </DialogDescription>
                 <DialogBody></DialogBody>
                 <DialogActions>
                     <Button

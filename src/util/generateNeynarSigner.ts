@@ -2,27 +2,26 @@ import {
     Account,
     Address,
     PrivateKeyAccount,
-    PublicClient,
     WalletClient,
-    createWalletClient,
     encodeAbiParameters,
-    http,
 } from "viem";
 import { SignedKeyRequestMetadataABI } from "@/abi/SignedKeyRequestMetadata";
-import neynarClient from "./neynarClient";
 import { isApiErrorResponse } from "@neynar/nodejs-sdk";
 import { SignerStatusEnum } from "@neynar/nodejs-sdk/build/neynar-api/v2";
 import { publicClient } from "./viemClient";
 import { KeyGatewayAbi } from "@/abi/KeyGatewayABI";
+import getNeynarClient from "./neynarClient";
 
 export const generateApprovedNeynarSigner = async (
     account: PrivateKeyAccount,
-    walletClient: WalletClient & { account: Account }
+    walletClient: WalletClient & { account: Account },
+    neynarApiKey: string
 ) => {
     const KEY_GATEWAY = "0x00000000fc56947c7e7183f8ca4b62398caadf0b" as Address;
     const SIGNED_KEY_REQUEST_VALIDATOR =
         "0x00000000fc700472606ed4fa22623acf62c60553" as Address;
     try {
+        const neynarClient = getNeynarClient(neynarApiKey);
         // Creating a new signer and obtaining its public key and UUID.
         const { public_key: signerPublicKey, signer_uuid } =
             await neynarClient.createSigner();
