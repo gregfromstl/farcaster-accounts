@@ -16,16 +16,19 @@ import {
 import { privateKeyToAccount } from "viem/accounts";
 import { Account, WalletClient } from "viem";
 import { optimism } from "viem/chains";
-import { useAccount, useWalletClient } from "wagmi";
+import { useAccount, useNetwork, useWalletClient } from "wagmi";
 import ConnectWalletButton from "./ConnectWalletButton";
 import { publicClient } from "@/util/viemClient";
 import { generateApprovedNeynarSigner } from "@/util/generateNeynarSigner";
 import toast from "react-hot-toast";
 import { FarcasterAccount } from "@/types/farcaster-account.types";
 import axios from "axios";
+import { User, usePrivy } from "@privy-io/react-auth";
 
 const createAccountAndSigner = async (
-    walletClient: WalletClient & { account: Account }
+    walletClient: WalletClient & { account: Account },
+    user: User,
+    authToken: string
 ): Promise<FarcasterAccount> => {
     if (!walletClient.account)
         throw new Error("Account not found on wallet client");
@@ -54,12 +57,17 @@ const createAccountAndSigner = async (
     const address = "0x8d474e96C3b78C0dF518266f7506840192531e8D";
 
     const farcasterAccount = {
+        user: user.id,
         fid,
         signerUUID,
         privateKey,
         custodyAddress: address,
     };
-    await axios.post("/api/accounts", farcasterAccount);
+    await axios.post("/api/accounts", farcasterAccount, {
+        headers: {
+            Authorization: `Bearer ${authToken}`,
+        },
+    });
     return farcasterAccount;
 };
 
@@ -68,12 +76,20 @@ const NewAccountButton = () => {
     const [isLoading, setIsLoading] = useState(false);
     const { data: walletClient } = useWalletClient();
     const account = useAccount();
+    const { getAccessToken, user } = usePrivy();
+    const { chain } = useNetwork();
 
     const create = async () => {
-        if (!walletClient) throw new Error("Wallet client not found");
         setIsLoading(true);
+        if (!walletClient) throw new Error("Wallet client not found");
+        const authToken = await getAccessToken();
+        if (!authToken || !user) throw new Error("User not logged in");
         try {
-            const promise = createAccountAndSigner(walletClient);
+            const promise = createAccountAndSigner(
+                walletClient,
+                user,
+                authToken
+            );
             await toast.promise<FarcasterAccount>(promise, {
                 loading: "Creating account...",
                 success: "Account created!",
@@ -100,7 +116,7 @@ const NewAccountButton = () => {
                     >
                         Cancel
                     </Button>
-                    {!account || !walletClient || account.chainId !== 10 ? (
+                    {!account || !walletClient || chain?.id !== 10 ? (
                         <ConnectWalletButton />
                     ) : (
                         <Button disabled={isLoading} onClick={create}>

@@ -2,6 +2,7 @@ import { z } from "zod";
 import { getAddress } from "viem";
 
 export const FarcasterAccountSchema = z.object({
+    user: z.string(),
     custodyAddress: z.string().refine((s) => getAddress(s)),
     privateKey: z.string(),
     fid: z.number(),

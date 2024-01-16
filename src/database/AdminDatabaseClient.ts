@@ -17,6 +17,7 @@ class AdminDatabaseClient extends DatabaseClient {
         account: FarcasterAccount
     ): Promise<Row<"accounts">> {
         const insert: Insert<"accounts"> = {
+            user: account.user,
             custody_address: account.custodyAddress,
             private_key: account.privateKey,
             fid: account.fid,
