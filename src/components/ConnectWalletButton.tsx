@@ -1,22 +1,17 @@
 "use client";
 import { Button } from "@components/button";
+import { usePrivy } from "@privy-io/react-auth";
+import { usePrivyWagmi } from "@privy-io/wagmi-connector";
 import { useEffect } from "react";
 import { useState } from "react";
-import {
-    useAccount,
-    useChainId,
-    useConnect,
-    useDisconnect,
-    useSwitchChain,
-} from "wagmi";
-import { injected } from "wagmi/connectors";
+import { useAccount } from "wagmi";
 
 const ConnectWalletButton = () => {
     const [isReady, setIsReady] = useState(false);
 
-    const { connect } = useConnect();
+    const { login } = usePrivy();
     const account = useAccount();
-    const { switchChain } = useSwitchChain();
+    const { wallet: activeWallet } = usePrivyWagmi();
 
     useEffect(() => {
         setIsReady(true);
@@ -24,17 +19,13 @@ const ConnectWalletButton = () => {
 
     if (!isReady) return <></>;
 
-    if (!account) {
-        return (
-            <Button onClick={() => connect({ connector: injected() })}>
-                Connect
-            </Button>
-        );
+    if (!activeWallet) {
+        return <Button onClick={login}>Login</Button>;
     }
 
-    if (account.chainId !== 10) {
+    if (activeWallet?.chainId.split(":")[1] !== "10") {
         return (
-            <Button onClick={() => switchChain({ chainId: 10 })}>
+            <Button onClick={() => activeWallet?.switchChain(10)}>
                 Switch Chain
             </Button>
         );

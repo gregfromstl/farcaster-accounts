@@ -1,20 +1,21 @@
 "use client";
 import React from "react";
-import { WagmiProvider } from "wagmi";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { PrivyProvider } from "@privy-io/react-auth";
+import { PrivyWagmiConnector } from "@privy-io/wagmi-connector";
 import { config } from "@/wagmi.config";
 
-const queryClient = new QueryClient();
 export default function Web3Wrapper({
     children,
 }: {
     children: React.ReactNode;
 }) {
     return (
-        <WagmiProvider config={config}>
-            <QueryClientProvider client={queryClient}>
+        <PrivyProvider appId="clredtno900rrl30f9o9495g1">
+            <PrivyWagmiConnector wagmiChainsConfig={config}>
+                {/* <WagmiProvider config={config}> */}
                 {children}
-            </QueryClientProvider>
-        </WagmiProvider>
+                {/* </WagmiProvider> */}
+            </PrivyWagmiConnector>
+        </PrivyProvider>
     );
 }
