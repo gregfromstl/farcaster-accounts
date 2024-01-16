@@ -30,6 +30,8 @@ const SettingsButton = () => {
     const [neyanrAPIKey, setNeynarAPIKey] = useState<string>();
     const { getAccessToken, user } = usePrivy();
 
+    if (!user) return <></>;
+
     const save = async () => {
         setIsLoading(true);
         const authToken = await getAccessToken();
@@ -57,7 +59,7 @@ const SettingsButton = () => {
                 disabled={!user}
                 onClick={() => setIsOpen(true)}
             >
-                <Cog6ToothIcon className="w-8 h-8" />
+                <Cog6ToothIcon className="w-8 h-8" /> Settings
             </Button>
             <Dialog open={isOpen} onClose={setIsOpen}>
                 <DialogTitle>Settings</DialogTitle>

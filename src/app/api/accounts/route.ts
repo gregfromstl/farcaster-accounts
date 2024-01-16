@@ -18,8 +18,7 @@ export async function POST(request: NextRequest) {
 
 export async function GET(request: NextRequest) {
     const claims = await getClaims(request);
-    if (!claims)
-        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    if (!claims) return NextResponse.json([]);
 
     const db = AdminDatabaseClient();
     const result = await db.getAccounts(claims.userId);

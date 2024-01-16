@@ -5,6 +5,8 @@ import { Toaster } from "react-hot-toast";
 import Web3Wrapper from "@/components/Web3Wrapper";
 import Image from "next/image";
 import ConnectWalletButton from "@/components/ConnectWalletButton";
+import SettingsButton from "@/components/SettingsButton";
+import NewAccountButton from "@/components/NewAccountButton";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -41,9 +43,20 @@ export default function RootLayout({
                             />
                             Farcaster Accounts
                         </span>
-                        <ConnectWalletButton />
+                        <div className="items-center flex gap-4">
+                            <ConnectWalletButton />
+                            <SettingsButton />
+                        </div>
                     </div>
-                    {children}
+                    <div className="flex w-full flex-col gap-4 py-24">
+                        <div className="w-full flex justify-between">
+                            <div />
+                            <div className="flex gap-2">
+                                <NewAccountButton />
+                            </div>
+                        </div>
+                        {children}
+                    </div>
                 </body>
             </Web3Wrapper>
         </html>

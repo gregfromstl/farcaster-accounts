@@ -39,30 +39,32 @@ function AccountsTable({}: {}) {
     }, [user]);
 
     return (
-        <Table className="w-full">
-            <TableHead>
-                <TableRow>
-                    <TableHeader>Account</TableHeader>
-                    <TableHeader>Handle</TableHeader>
-                    <TableHeader>FID</TableHeader>
-                    <TableHeader>Custody Address</TableHeader>
-                    <TableHeader>Neynar Signer</TableHeader>
-                </TableRow>
-            </TableHead>
-            <TableBody>
-                {accounts.map((account) => (
-                    <TableRow key={account.fid}>
-                        <TableCell>{}</TableCell>
-                        <TableCell>{}</TableCell>
-                        <TableCell className="font-medium">
-                            {account.fid}
-                        </TableCell>
-                        <TableCell>{}</TableCell>
-                        <TableCell className="text-zinc-500">{}</TableCell>
+        <div className="w-full">
+            <Table>
+                <TableHead>
+                    <TableRow>
+                        <TableHeader>Account</TableHeader>
+                        <TableHeader>Handle</TableHeader>
+                        <TableHeader>FID</TableHeader>
+                        <TableHeader>Custody Address</TableHeader>
+                        <TableHeader>Neynar Signer</TableHeader>
                     </TableRow>
-                ))}
-            </TableBody>
-        </Table>
+                </TableHead>
+                <TableBody>
+                    {accounts.map((account) => (
+                        <TableRow key={account.fid}>
+                            <TableCell>{}</TableCell>
+                            <TableCell>{}</TableCell>
+                            <TableCell className="font-medium">
+                                {account.fid}
+                            </TableCell>
+                            <TableCell>{}</TableCell>
+                            <TableCell className="text-zinc-500">{}</TableCell>
+                        </TableRow>
+                    ))}
+                </TableBody>
+            </Table>
+        </div>
     );
 }
 
