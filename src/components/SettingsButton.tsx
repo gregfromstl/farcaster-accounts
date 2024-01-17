@@ -16,6 +16,7 @@ import { Field, Label } from "@components/fieldset";
 import { Input } from "@components/input";
 import { Settings } from "@/types/settings.types";
 import { usePrivyWagmi } from "@privy-io/wagmi-connector";
+import { useRouter } from "next/navigation";
 
 const updateSettings = async (settings: Settings, authToken: string) => {
     await axios.put("/api/settings", settings, {
@@ -41,6 +42,7 @@ const SettingsButton = () => {
     const [neyanrAPIKey, setNeynarAPIKey] = useState<string>();
     const { getAccessToken, user, authenticated } = usePrivy();
     const { wallet: activeWallet } = usePrivyWagmi();
+    const router = useRouter();
 
     useEffect(() => {
         if (!user) return;
@@ -48,7 +50,7 @@ const SettingsButton = () => {
             const authToken = await getAccessToken();
             if (!authToken || !user) throw new Error("User not logged in");
             const settings = await getSettings(authToken);
-            setNeynarAPIKey(settings.neynar_api_key);
+            setNeynarAPIKey(settings.neynar_api_key || undefined);
         })();
     }, [isOpen]);
 
@@ -60,7 +62,13 @@ const SettingsButton = () => {
         if (!authToken || !user) throw new Error("User not logged in");
         try {
             const promise = updateSettings(
-                { user: user.id, neynar_api_key: neyanrAPIKey },
+                {
+                    user: user.id,
+                    neynar_api_key:
+                        neyanrAPIKey && neyanrAPIKey.length > 0
+                            ? neyanrAPIKey
+                            : null,
+                },
                 authToken
             );
             await toast.promise<void>(promise, {
@@ -69,6 +77,7 @@ const SettingsButton = () => {
                 error: "Failed to save settings.",
             });
             setIsOpen(false);
+            router.refresh();
         } finally {
             setIsLoading(false);
         }
