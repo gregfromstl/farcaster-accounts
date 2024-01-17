@@ -38,6 +38,16 @@ class ServerDataApi {
         return account;
     }
 
+    async getAccounts(): Promise<FarcasterAccount[]> {
+        if (!this.authToken) throw new Error("User is not logged in");
+        const accounts = await request<FarcasterAccount[]>({
+            path: `${process.env.BASE_URL}/api/accounts`,
+            method: "GET",
+            authToken: this.authToken,
+        });
+        return accounts;
+    }
+
     async getUserAccount(fid: number): Promise<FarcasterUserAccount> {
         if (!this.authToken) throw new Error("User is not logged in");
         const account = await this.getAccount(fid);
@@ -56,6 +66,33 @@ class ServerDataApi {
             display_name: user.displayName,
             bio: user.profile.bio.text,
         };
+    }
+
+    async getUserAccounts(): Promise<FarcasterUserAccount[]> {
+        if (!this.authToken) throw new Error("User is not logged in");
+        const accounts = await this.getAccounts();
+        const settings = await this.getSettings();
+
+        if (!settings.neynar_api_key)
+            throw new Error("Neynar API key is not set");
+        const neynar = getNeynarClient(settings.neynar_api_key);
+        const userAccounts = await neynar.fetchBulkUsers(
+            accounts.map((account) => account.fid),
+            {}
+        );
+        return userAccounts.users.map((user) => {
+            const account = accounts.find(
+                (account) => account.fid === user.fid
+            );
+            if (!account) throw new Error("Account not found");
+            return {
+                ...account,
+                username: user.username,
+                profile_image: user.pfp_url,
+                display_name: user.display_name,
+                bio: user.profile.bio.text,
+            };
+        });
     }
 }
 export default () => new ServerDataApi();

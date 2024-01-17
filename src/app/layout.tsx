@@ -42,12 +42,14 @@ export default function RootLayout({
                             />
                             Farcaster Accounts
                         </span>
-                        <div className="items-center flex gap-4">
+                        <div className="items-center flex gap-3">
                             <ConnectWalletButton />
                             <SettingsButton />
                         </div>
                     </div>
-                    {children}
+                    <main className="flex w-full flex-col gap-4 py-24">
+                        {children}
+                    </main>
                 </body>
             </Web3Wrapper>
         </html>

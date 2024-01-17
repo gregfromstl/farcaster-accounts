@@ -1,5 +1,6 @@
 import axios from "axios";
 import ServerDataApi from "@/database/ServerDataApi";
+import AccountForm from "@/components/AccountRow";
 
 const getAccount = async (fid: number, authToken: string) => {
     const result = await axios.get(
@@ -18,7 +19,7 @@ async function AccountPage({ params: { fid } }: { params: { fid: string } }) {
     const userAccount = await serverDataApi.getUserAccount(parseInt(fid));
     console.log(userAccount);
 
-    return <div>{fid}</div>;
+    return <AccountForm userAccount={userAccount} />;
 }
 
 export default AccountPage;

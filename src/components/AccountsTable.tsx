@@ -1,42 +1,16 @@
-"use client";
-import { FarcasterAccount } from "@/types/farcaster-account.types";
 import {
     Table,
     TableBody,
-    TableCell,
     TableHead,
     TableHeader,
     TableRow,
 } from "@components/table";
-import { usePrivy } from "@privy-io/react-auth";
-import axios from "axios";
-import { useEffect, useState } from "react";
+import AccountRow from "./AccountRow";
+import ServerDataApi from "@/database/ServerDataApi";
 
-const getAccounts = async (authToken: string) => {
-    const result = await axios.get("/api/accounts", {
-        headers: {
-            Authorization: `Bearer ${authToken}`,
-        },
-    });
-    return result.data;
-};
-
-function AccountsTable({}: {}) {
-    const { getAccessToken, user } = usePrivy();
-    const [accounts, setAccounts] = useState<FarcasterAccount[]>([]);
-
-    useEffect(() => {
-        const refreshAccounts = async () => {
-            const token = await getAccessToken();
-            if (!token) {
-                setAccounts([]);
-                return;
-            }
-            const accounts = await getAccounts(token);
-            setAccounts(accounts);
-        };
-        refreshAccounts();
-    }, [user]);
+async function AccountsTable({}: {}) {
+    const serverDataApi = ServerDataApi();
+    const userAccounts = await serverDataApi.getUserAccounts();
 
     return (
         <div className="w-full">
@@ -51,19 +25,11 @@ function AccountsTable({}: {}) {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {accounts.map((account) => (
-                        <TableRow
-                            key={account.fid}
-                            href={`/account/${account.fid}`}
-                        >
-                            <TableCell>{}</TableCell>
-                            <TableCell>{}</TableCell>
-                            <TableCell className="font-medium">
-                                {account.fid}
-                            </TableCell>
-                            <TableCell>{}</TableCell>
-                            <TableCell className="text-zinc-500">{}</TableCell>
-                        </TableRow>
+                    {userAccounts.map((userAccount) => (
+                        <AccountRow
+                            userAccount={userAccount}
+                            key={userAccount.fid}
+                        />
                     ))}
                 </TableBody>
             </Table>
