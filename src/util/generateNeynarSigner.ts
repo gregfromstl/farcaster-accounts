@@ -13,6 +13,7 @@ import { KeyGatewayAbi } from "@/abi/KeyGatewayABI";
 import getNeynarClient from "./neynarClient";
 
 export const generateApprovedNeynarSigner = async (
+    fid: number,
     account: PrivateKeyAccount,
     walletClient: WalletClient & { account: Account },
     neynarApiKey: string
@@ -43,11 +44,11 @@ export const generateApprovedNeynarSigner = async (
         ];
 
         // Lookup user details using the custody address.
-        const { user: farcasterDeveloper } =
-            await neynarClient.lookupUserByCustodyAddress(account.address);
+        const {
+            result: { user: farcasterDeveloper },
+        } = await neynarClient.lookupUserByFid(fid);
 
         // Generates an expiration date for the signature
-        // e.g. 1693927665
         const deadline = Math.floor(Date.now() / 1000) + 86400; // signature is valid for 1 day from now
 
         // Signing the key request data.
@@ -82,7 +83,7 @@ export const generateApprovedNeynarSigner = async (
             address: KEY_GATEWAY,
             abi: KeyGatewayAbi,
             functionName: "nonces",
-            args: [farcasterDeveloper.custody_address as Address],
+            args: [farcasterDeveloper.custodyAddress as Address],
         });
 
         // Additional EIP-712 domain and type definitions for the key gateway.
@@ -128,7 +129,7 @@ export const generateApprovedNeynarSigner = async (
                 abi: KeyGatewayAbi,
                 functionName: "addFor",
                 args: [
-                    farcasterDeveloper.custody_address as Address,
+                    farcasterDeveloper.custodyAddress as Address,
                     1,
                     signerPublicKey as Address,
                     1,

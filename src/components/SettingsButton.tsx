@@ -39,7 +39,7 @@ const getSettings = async (authToken: string) => {
 const SettingsButton = () => {
     const [isOpen, setIsOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-    const [neyanrAPIKey, setNeynarAPIKey] = useState<string>();
+    const [neyanrAPIKey, setNeynarAPIKey] = useState<string>("");
     const { getAccessToken, user, authenticated } = usePrivy();
     const { wallet: activeWallet } = usePrivyWagmi();
     const router = useRouter();
@@ -50,7 +50,7 @@ const SettingsButton = () => {
             const authToken = await getAccessToken();
             if (!authToken || !user) throw new Error("User not logged in");
             const settings = await getSettings(authToken);
-            setNeynarAPIKey(settings.neynar_api_key || undefined);
+            setNeynarAPIKey(settings.neynar_api_key || "");
         })();
     }, [isOpen]);
 

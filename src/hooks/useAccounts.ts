@@ -70,7 +70,7 @@ export default function useAccounts() {
         if (!result) throw new Error("Failed to update user");
         setTimeout(() => {
             router.refresh();
-        }, 1000);
+        }, 500);
     };
 
     useEffect(() => {

@@ -12,7 +12,6 @@ import {
     DialogBody,
     DialogTitle,
 } from "@components/dialog";
-import useNeynarClient from "@/hooks/useNeynarClient";
 import useAccounts from "@/hooks/useAccounts";
 import toast from "react-hot-toast";
 
@@ -27,8 +26,10 @@ function AccountFormModal({
 }) {
     const [username, setUsername] = useState(userAccount.username);
     const [displayName, setDisplayName] = useState(userAccount.display_name);
-    const [bio, setBio] = useState(userAccount.bio);
-    const [profileImage, setProfileImage] = useState(userAccount.profile_image);
+    const [bio, setBio] = useState(userAccount.bio ?? undefined);
+    const [profileImage, setProfileImage] = useState(
+        userAccount.profile_image ?? undefined
+    );
     const [hasChanges, setHasChanges] = useState(false);
     const [loading, setLoading] = useState(false);
     const { updateUser } = useAccounts();
@@ -73,7 +74,12 @@ function AccountFormModal({
 
     return (
         <Dialog open={isOpen} onClose={close} size="3xl">
-            <form onSubmit={updateAccount}>
+            <form
+                onSubmit={(e) => {
+                    e.preventDefault();
+                    updateAccount();
+                }}
+            >
                 <DialogTitle>Edit Account</DialogTitle>
                 <DialogBody>
                     <Fieldset
