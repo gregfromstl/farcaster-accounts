@@ -68,7 +68,9 @@ export default function useAccounts() {
             bio: account.bio,
         });
         if (!result) throw new Error("Failed to update user");
-        router.refresh();
+        setTimeout(() => {
+            router.refresh();
+        }, 1000);
     };
 
     useEffect(() => {

@@ -25,42 +25,37 @@ import { FarcasterAccount } from "@/types/farcaster-account.types";
 import axios from "axios";
 import { User, usePrivy } from "@privy-io/react-auth";
 import { PlusIcon } from "@heroicons/react/24/solid";
+import useSettings from "@/hooks/useSettings";
+import useAuthToken from "@/hooks/useAuthToken";
 
 const createAccountAndSigner = async (
     walletClient: WalletClient & { account: Account },
     user: User,
+    neynarApiKey: string,
     authToken: string
 ): Promise<FarcasterAccount> => {
     if (!walletClient.account)
         throw new Error("Account not found on wallet client");
-    // const { address, privateKey } = generateAddress();
-    // const account = privateKeyToAccount(privateKey);
+    const { address, privateKey } = generateAddress();
+    const account = privateKeyToAccount(privateKey);
 
-    // const price = await getAccountPrice();
-    // const txHash = await walletClient.sendTransaction({
-    //     account: walletClient.account,
-    //     chain: optimism,
-    //     to: address,
-    //     value: BigInt(Math.ceil(Number(price) * 1.5)),
-    // });
-    // await publicClient.waitForTransactionReceipt({
-    //     hash: txHash,
-    // });
-    // const fid = await generateFarcasterAccount(account);
-    // const settings = await axios.get("/api/settings", {
-    // 	headers: {
-    // 		Authorization: `Bearer ${authToken}`,
-    // 	},
-    // });
-    // const signerUUID = await generateApprovedNeynarSigner(
-    //     account,
-    //     walletClient,
-    // 	settings.data.neynar_api_key
-    // );
-    const fid = 10;
-    const signerUUID = "0x123";
-    const privateKey = "0x123";
-    const address = "0x8d474e96C3b78C0dF518266f7506840192531e8D";
+    const price = await getAccountPrice();
+    const txHash = await walletClient.sendTransaction({
+        account: walletClient.account,
+        chain: optimism,
+        to: address,
+        value: BigInt(Math.ceil(Number(price) * 1.5)),
+    });
+    await publicClient.waitForTransactionReceipt({
+        hash: txHash,
+    });
+    const fid = await generateFarcasterAccount(account);
+
+    const signerUUID = await generateApprovedNeynarSigner(
+        account,
+        walletClient,
+        neynarApiKey
+    );
 
     const farcasterAccount = {
         user: user.id,
@@ -81,19 +76,23 @@ const NewAccountButton = () => {
     const [isOpen, setIsOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const { data: walletClient } = useWalletClient();
+    const { user } = usePrivy();
     const account = useAccount();
-    const { getAccessToken, user } = usePrivy();
+    const { authToken } = useAuthToken();
+    const { settings } = useSettings();
     const { chain } = useNetwork();
 
     const create = async () => {
         setIsLoading(true);
         if (!walletClient) throw new Error("Wallet client not found");
-        const authToken = await getAccessToken();
         if (!authToken || !user) throw new Error("User not logged in");
+        if (!settings?.neynar_api_key)
+            throw new Error("Neynar API key not set");
         try {
             const promise = createAccountAndSigner(
                 walletClient,
                 user,
+                settings?.neynar_api_key,
                 authToken
             );
             await toast.promise<FarcasterAccount>(promise, {
@@ -131,7 +130,16 @@ const NewAccountButton = () => {
                     {!account || !walletClient || chain?.id !== 10 ? (
                         <ConnectWalletButton />
                     ) : (
-                        <Button disabled={isLoading} onClick={create}>
+                        <Button
+                            disabled={isLoading}
+                            onClick={async () => {
+                                try {
+                                    await create();
+                                } catch (e: any) {
+                                    toast.error(e.message);
+                                }
+                            }}
+                        >
                             Create
                         </Button>
                     )}

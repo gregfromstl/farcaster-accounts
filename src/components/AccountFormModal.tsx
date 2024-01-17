@@ -56,6 +56,7 @@ function AccountFormModal({
                 success: "Account updated!",
                 error: "Failed to update account.",
             });
+            close();
         } finally {
             setLoading(false);
         }

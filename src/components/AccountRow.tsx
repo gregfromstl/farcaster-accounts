@@ -17,7 +17,7 @@ function AccountRow({ userAccount }: { userAccount: FarcasterUserAccount }) {
                 onClick={() => setIsOpen(true)}
             >
                 <TableCell>
-                    <div className="flex gap-3 items-center">
+                    <div className="flex gap-3 text-black items-center">
                         <div className="w-10 h-10 rounded-full border overflow-hidden relative bg-gray-100">
                             {userAccount.profile_image && (
                                 <Image
