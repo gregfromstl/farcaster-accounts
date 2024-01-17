@@ -11,7 +11,6 @@ import ServerDataApi from "@/database/ServerDataApi";
 async function AccountsTable({}: {}) {
     const serverDataApi = ServerDataApi();
     const userAccounts = await serverDataApi.getUserAccounts();
-    console.log("REFRESH");
 
     return (
         <div className="w-full">

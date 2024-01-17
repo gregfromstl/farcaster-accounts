@@ -69,7 +69,7 @@ class ServerDataApi {
     }
 
     async getUserAccounts(): Promise<FarcasterUserAccount[]> {
-        if (!this.authToken) throw new Error("User is not logged in");
+        if (!this.authToken) return [];
         const accounts = await this.getAccounts();
         const settings = await this.getSettings();
 
