@@ -141,8 +141,8 @@ const NewAccountButton = ({ settings }: { settings?: Settings }) => {
             <Dialog open={isOpen} onClose={setIsOpen}>
                 <DialogTitle>Generate a new account</DialogTitle>
                 <DialogDescription>
-                    You'll be asked to approve two transactions. One to pay for
-                    your Farcaster account and one to approve your Neynar
+                    You&apos;ll be asked to approve two transactions. One to pay
+                    for your Farcaster account and one to approve your Neynar
                     signer. All leftover funds will be returned to your wallet
                     after the process completes.
                 </DialogDescription>
