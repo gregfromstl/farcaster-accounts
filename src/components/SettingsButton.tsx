@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "@components/button";
 import {
     Dialog,
@@ -8,13 +8,14 @@ import {
     DialogDescription,
     DialogTitle,
 } from "@components/dialog";
-import { Cog6ToothIcon, CogIcon } from "@heroicons/react/24/solid";
+import { CogIcon } from "@heroicons/react/24/solid";
 import toast from "react-hot-toast";
 import axios from "axios";
 import { usePrivy } from "@privy-io/react-auth";
 import { Field, Label } from "@components/fieldset";
 import { Input } from "@components/input";
 import { Settings } from "@/types/settings.types";
+import { usePrivyWagmi } from "@privy-io/wagmi-connector";
 
 const updateSettings = async (settings: Settings, authToken: string) => {
     await axios.put("/api/settings", settings, {
@@ -24,13 +25,34 @@ const updateSettings = async (settings: Settings, authToken: string) => {
     });
 };
 
+const getSettings = async (authToken: string) => {
+    const { data } = await axios.get<Settings>("/api/settings", {
+        headers: {
+            Authorization: `Bearer ${authToken}`,
+        },
+    });
+
+    return data;
+};
+
 const SettingsButton = () => {
     const [isOpen, setIsOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [neyanrAPIKey, setNeynarAPIKey] = useState<string>();
     const { getAccessToken, user } = usePrivy();
+    const { wallet: activeWallet } = usePrivyWagmi();
 
-    if (!user) return <></>;
+    useEffect(() => {
+        if (!user) return;
+        (async () => {
+            const authToken = await getAccessToken();
+            if (!authToken || !user) throw new Error("User not logged in");
+            const settings = await getSettings(authToken);
+            setNeynarAPIKey(settings.neynar_api_key);
+        })();
+    }, [isOpen]);
+
+    if (!activeWallet) return <></>;
 
     const save = async () => {
         setIsLoading(true);
@@ -59,7 +81,7 @@ const SettingsButton = () => {
                 disabled={!user}
                 onClick={() => setIsOpen(true)}
             >
-                <Cog6ToothIcon className="w-8 h-8" /> Settings
+                <CogIcon /> Settings
             </Button>
             <Dialog open={isOpen} onClose={setIsOpen}>
                 <DialogTitle>Settings</DialogTitle>
@@ -70,6 +92,7 @@ const SettingsButton = () => {
                         <Input
                             name="neynar-api-key"
                             type="password"
+                            value={neyanrAPIKey}
                             onChange={(e) => setNeynarAPIKey(e.target.value)}
                             placeholder="••••••••••••••••"
                         />

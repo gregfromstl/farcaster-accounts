@@ -31,12 +31,6 @@ const createAccountAndSigner = async (
     user: User,
     authToken: string
 ): Promise<FarcasterAccount> => {
-    const settings = await axios.get("/api/settings", {
-        headers: {
-            Authorization: `Bearer ${authToken}`,
-        },
-    });
-    console.log(settings.data);
     if (!walletClient.account)
         throw new Error("Account not found on wallet client");
     // const { address, privateKey } = generateAddress();

@@ -24,5 +24,6 @@ export async function GET(request: NextRequest) {
 
     const db = AdminDatabaseClient();
     const result = await db.getSettings(claims.userId);
+
     return NextResponse.json(result);
 }
