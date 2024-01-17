@@ -1,7 +1,3 @@
-import { Database } from "@/types/database.types";
-import { createClient } from "@supabase/supabase-js";
-import DatabaseClient from "./DatabaseClient";
-import { Insert, Row } from "@/types/database-helpers.types";
 import {
     FarcasterAccount,
     FarcasterUserAccount,

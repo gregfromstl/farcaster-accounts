@@ -1,3 +1,4 @@
+import CryptoJS from "crypto-js";
 import { Database } from "@/types/database.types";
 import { createClient } from "@supabase/supabase-js";
 import DatabaseClient from "./DatabaseClient";
@@ -6,6 +7,7 @@ import { FarcasterAccount } from "@/types/farcaster-account.types";
 import { Settings } from "@/types/settings.types";
 
 class AdminDatabaseClient extends DatabaseClient {
+    private encryptionSecret: string = process.env.ENCRYPTION_SECRET as string;
     constructor() {
         const client = createClient<Database>(
             process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -20,7 +22,10 @@ class AdminDatabaseClient extends DatabaseClient {
         const insert: Insert<"accounts"> = {
             user: account.user,
             custody_address: account.custody_address,
-            private_key: account.private_key,
+            private_key: CryptoJS.AES.encrypt(
+                account.private_key,
+                this.encryptionSecret
+            ).toString(),
             fid: account.fid,
             signer_uuid: account.signer_uuid,
         };
@@ -44,6 +49,14 @@ class AdminDatabaseClient extends DatabaseClient {
             .eq("user", user);
         if (result.error) throw result.error;
 
+        result.data.forEach((account) => {
+            const bytes = CryptoJS.AES.decrypt(
+                account.private_key,
+                this.encryptionSecret
+            );
+            account.private_key = bytes.toString(CryptoJS.enc.Utf8);
+        });
+
         return result.data;
     }
 
@@ -54,10 +67,24 @@ class AdminDatabaseClient extends DatabaseClient {
             .eq("fid", fid);
         if (result.error) throw result.error;
 
+        result.data.forEach((account) => {
+            const bytes = CryptoJS.AES.decrypt(
+                account.private_key,
+                this.encryptionSecret
+            );
+            account.private_key = bytes.toString(CryptoJS.enc.Utf8);
+        });
+
         return result.data[0];
     }
 
     public async upsertSettings(settings: Settings): Promise<Row<"settings">> {
+        if (settings.neynar_api_key)
+            settings.neynar_api_key = CryptoJS.AES.encrypt(
+                settings.neynar_api_key,
+                this.encryptionSecret
+            ).toString();
+
         const res = await this.client
             .from("settings")
             .upsert(settings)
@@ -78,13 +105,21 @@ class AdminDatabaseClient extends DatabaseClient {
 
         if (res.error) throw res.error;
 
+        let result;
         if (res.data.length === 0) {
-            return this.upsertSettings({
+            result = await this.upsertSettings({
                 user,
             });
         } else {
-            return res.data[0];
+            result = res.data[0];
         }
+
+        if (result.neynar_api_key)
+            result.neynar_api_key = CryptoJS.AES.decrypt(
+                result.neynar_api_key,
+                this.encryptionSecret
+            ).toString(CryptoJS.enc.Utf8);
+        return result;
     }
 }
 export default () => new AdminDatabaseClient();
