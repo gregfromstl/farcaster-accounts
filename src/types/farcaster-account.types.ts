@@ -15,6 +15,7 @@ export const FarcasterUserAccountSchema = FarcasterAccountSchema.extend({
     username: z.string().optional(),
     profile_image: z.string().url().optional(),
     display_name: z.string().optional(),
+    bio: z.string().optional(),
 });
 
 export type FarcasterUserAccount = z.infer<typeof FarcasterUserAccountSchema>;

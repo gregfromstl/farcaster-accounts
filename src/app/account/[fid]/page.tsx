@@ -1,6 +1,5 @@
 import axios from "axios";
-import { getAccessToken } from "@privy-io/react-auth";
-import { cookies } from "next/headers";
+import ServerDataApi from "@/database/ServerDataApi";
 
 const getAccount = async (fid: number, authToken: string) => {
     const result = await axios.get(
@@ -15,11 +14,9 @@ const getAccount = async (fid: number, authToken: string) => {
 };
 
 async function AccountPage({ params: { fid } }: { params: { fid: string } }) {
-    const c = cookies();
-    const authToken = c.get("privy-token")?.value;
-    if (!authToken) throw new Error("No auth token");
-
-    const account = await getAccount(parseInt(fid), authToken);
+    const serverDataApi = ServerDataApi();
+    const userAccount = await serverDataApi.getUserAccount(parseInt(fid));
+    console.log(userAccount);
 
     return <div>{fid}</div>;
 }
