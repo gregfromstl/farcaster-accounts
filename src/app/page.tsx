@@ -1,8 +1,15 @@
 import AccountsTable from "@/components/AccountsTable";
+import NewAccountButton from "@/components/NewAccountButton";
 
 export default function Home() {
     return (
-        <main className="flex">
+        <main className="flex w-full flex-col gap-4 py-24">
+            <div className="w-full flex justify-between">
+                <div />
+                <div className="flex gap-2">
+                    <NewAccountButton />
+                </div>
+            </div>
             <AccountsTable />
         </main>
     );

@@ -48,15 +48,7 @@ export default function RootLayout({
                             <SettingsButton />
                         </div>
                     </div>
-                    <div className="flex w-full flex-col gap-4 py-24">
-                        <div className="w-full flex justify-between">
-                            <div />
-                            <div className="flex gap-2">
-                                <NewAccountButton />
-                            </div>
-                        </div>
-                        {children}
-                    </div>
+                    {children}
                 </body>
             </Web3Wrapper>
         </html>
