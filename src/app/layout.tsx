@@ -36,7 +36,7 @@ export default function RootLayout({
                         <div
                             className={`w-screen flex-1 flex flex-col px-8 overflow-x-hidden py-2 max-w-7xl mx-auto ${inter.className}`}
                         >
-                            <header className="w-full py-4 justify-between flex items-center">
+                            <header className="w-full py-4 justify-between flex flex-col md:flex-row gap-3 md:items-center">
                                 <span className="flex gap-2 items-center text-2xl font-bold">
                                     <Image
                                         src="/farcaster.svg"
