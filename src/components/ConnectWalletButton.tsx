@@ -4,13 +4,14 @@ import { usePrivy } from "@privy-io/react-auth";
 import { usePrivyWagmi } from "@privy-io/wagmi-connector";
 import { useEffect } from "react";
 import { useState } from "react";
-import { useAccount } from "wagmi";
+import { useConnect } from "wagmi";
+import { InjectedConnector } from "wagmi/connectors/injected";
 
 const ConnectWalletButton = () => {
     const [isReady, setIsReady] = useState(false);
 
-    const { login } = usePrivy();
-    const account = useAccount();
+    const { login, authenticated } = usePrivy();
+    const { connect } = useConnect();
     const { wallet: activeWallet } = usePrivyWagmi();
 
     useEffect(() => {
@@ -19,8 +20,20 @@ const ConnectWalletButton = () => {
 
     if (!isReady) return <></>;
 
-    if (!activeWallet) {
+    if (!authenticated) {
         return <Button onClick={login}>Login</Button>;
+    }
+
+    if (!activeWallet) {
+        return (
+            <Button
+                onClick={() =>
+                    connect({ chainId: 10, connector: new InjectedConnector() })
+                }
+            >
+                Unlock Wallet
+            </Button>
+        );
     }
 
     if (activeWallet?.chainId.split(":")[1] !== "10") {
@@ -33,7 +46,8 @@ const ConnectWalletButton = () => {
 
     return (
         <div>
-            {account.address?.slice(0, 6)}...{account.address?.slice(-4)}
+            {activeWallet.address?.slice(0, 6)}...
+            {activeWallet.address?.slice(-4)}
         </div>
     );
 };
