@@ -24,7 +24,7 @@ export default function RootLayout({
         <html lang="en" className="light">
             <Web3Wrapper>
                 <body
-                    className={`w-screen px-8 overflow-x-hidden max-w-7xl overflow-y-scroll h-screen mx-auto ${inter.className}`}
+                    className={`w-screen px-8 overflow-x-hidden max-w-7xl mx-auto ${inter.className}`}
                 >
                     <Toaster
                         toastOptions={{
