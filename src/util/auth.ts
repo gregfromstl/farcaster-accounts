@@ -26,6 +26,7 @@ export async function getClaims(request: Request) {
             "Bearer ",
             ""
         );
+
         const verifiedClaims = await privy.verifyAuthToken(authToken);
         return verifiedClaims;
     } catch (e) {

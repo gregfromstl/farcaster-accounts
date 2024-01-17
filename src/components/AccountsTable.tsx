@@ -52,7 +52,10 @@ function AccountsTable({}: {}) {
                 </TableHead>
                 <TableBody>
                     {accounts.map((account) => (
-                        <TableRow key={account.fid}>
+                        <TableRow
+                            key={account.fid}
+                            href={`/account/${account.fid}`}
+                        >
                             <TableCell>{}</TableCell>
                             <TableCell>{}</TableCell>
                             <TableCell className="font-medium">

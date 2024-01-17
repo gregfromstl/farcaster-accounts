@@ -47,6 +47,16 @@ class AdminDatabaseClient extends DatabaseClient {
         return result.data;
     }
 
+    public async getAccount(fid: number): Promise<Row<"accounts">> {
+        const result = await this.client
+            .from("accounts")
+            .select()
+            .eq("fid", fid);
+        if (result.error) throw result.error;
+
+        return result.data[0];
+    }
+
     public async upsertSettings(settings: Settings): Promise<Row<"settings">> {
         const res = await this.client
             .from("settings")

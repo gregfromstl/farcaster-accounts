@@ -6,7 +6,6 @@ import Web3Wrapper from "@/components/Web3Wrapper";
 import Image from "next/image";
 import ConnectWalletButton from "@/components/ConnectWalletButton";
 import SettingsButton from "@/components/SettingsButton";
-import NewAccountButton from "@/components/NewAccountButton";
 
 const inter = Inter({ subsets: ["latin"] });
 
