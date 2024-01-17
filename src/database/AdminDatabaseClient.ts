@@ -42,9 +42,7 @@ class AdminDatabaseClient extends DatabaseClient {
             .from("accounts")
             .select()
             .eq("user", user);
-        if (result.error) {
-            throw result.error;
-        }
+        if (result.error) throw result.error;
 
         return result.data;
     }
@@ -66,12 +64,17 @@ class AdminDatabaseClient extends DatabaseClient {
         const res = await this.client
             .from("settings")
             .select()
-            .eq("user", user)
-            .single();
+            .eq("user", user);
 
         if (res.error) throw res.error;
 
-        return res.data;
+        if (res.data.length === 0) {
+            return this.upsertSettings({
+                user,
+            });
+        } else {
+            return res.data[0];
+        }
     }
 }
 export default () => new AdminDatabaseClient();
