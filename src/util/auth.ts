@@ -1,4 +1,5 @@
 import { PrivyClient } from "@privy-io/server-auth";
+import { cookies } from "next/headers";
 
 const privy = new PrivyClient(
     "clredtno900rrl30f9o9495g1",
@@ -32,4 +33,12 @@ export async function getClaims(request: Request) {
     } catch (e) {
         return false;
     }
+}
+
+export async function getUserFromCookies() {
+    const c = cookies();
+    const authToken = c.get("privy-token")?.value;
+    if (!authToken) return undefined;
+    const verifiedClaims = await privy.verifyAuthToken(authToken);
+    return verifiedClaims;
 }

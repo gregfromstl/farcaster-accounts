@@ -35,7 +35,7 @@ class ServerDataApi {
     }
 
     async getAccounts(): Promise<FarcasterAccount[]> {
-        if (!this.authToken) throw new Error("User is not logged in");
+        if (!this.authToken) return [];
         const accounts = await request<FarcasterAccount[]>({
             path: `${process.env.BASE_URL}/api/accounts`,
             method: "GET",
@@ -64,14 +64,13 @@ class ServerDataApi {
         };
     }
 
-    async getUserAccounts(): Promise<FarcasterUserAccount[]> {
+    async getUserAccounts(
+        neynarApiKey: string
+    ): Promise<FarcasterUserAccount[]> {
         if (!this.authToken) return [];
         const accounts = await this.getAccounts();
-        const settings = await this.getSettings();
 
-        if (!settings.neynar_api_key)
-            throw new Error("Neynar API key is not set");
-        const neynar = getNeynarClient(settings.neynar_api_key);
+        const neynar = getNeynarClient(neynarApiKey);
         const userAccounts = await neynar.fetchBulkUsers(
             accounts.map((account) => account.fid),
             {}
