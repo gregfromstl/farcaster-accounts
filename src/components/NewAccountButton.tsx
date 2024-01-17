@@ -76,8 +76,7 @@ const NewAccountButton = () => {
     const [isOpen, setIsOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const { data: walletClient } = useWalletClient();
-    const { user } = usePrivy();
-    const account = useAccount();
+    const { user, authenticated } = usePrivy();
     const { authToken } = useAuthToken();
     const { settings } = useSettings();
     const { chain } = useNetwork();
@@ -127,7 +126,7 @@ const NewAccountButton = () => {
                     >
                         Cancel
                     </Button>
-                    {!account || !walletClient || chain?.id !== 10 ? (
+                    {!authenticated || !walletClient || chain?.id !== 10 ? (
                         <ConnectWalletButton />
                     ) : (
                         <Button

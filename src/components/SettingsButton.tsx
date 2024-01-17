@@ -39,7 +39,7 @@ const SettingsButton = () => {
     const [isOpen, setIsOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [neyanrAPIKey, setNeynarAPIKey] = useState<string>();
-    const { getAccessToken, user } = usePrivy();
+    const { getAccessToken, user, authenticated } = usePrivy();
     const { wallet: activeWallet } = usePrivyWagmi();
 
     useEffect(() => {
@@ -52,7 +52,7 @@ const SettingsButton = () => {
         })();
     }, [isOpen]);
 
-    if (!activeWallet) return <></>;
+    if (!activeWallet || !authenticated) return <></>;
 
     const save = async () => {
         setIsLoading(true);

@@ -2,6 +2,7 @@
 import { Button } from "@components/button";
 import { usePrivy } from "@privy-io/react-auth";
 import { usePrivyWagmi } from "@privy-io/wagmi-connector";
+import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useState } from "react";
 import { useConnect } from "wagmi";
@@ -13,10 +14,15 @@ const ConnectWalletButton = () => {
     const { login, authenticated } = usePrivy();
     const { connect } = useConnect();
     const { wallet: activeWallet } = usePrivyWagmi();
+    const router = useRouter();
 
     useEffect(() => {
         setIsReady(true);
     }, []);
+
+    useEffect(() => {
+        router.refresh();
+    }, [authenticated]);
 
     if (!isReady) return <></>;
 
