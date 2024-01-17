@@ -27,6 +27,7 @@ import { User, usePrivy } from "@privy-io/react-auth";
 import { PlusIcon } from "@heroicons/react/24/solid";
 import useSettings from "@/hooks/useSettings";
 import useAuthToken from "@/hooks/useAuthToken";
+import { useRouter } from "next/navigation";
 
 const createAccountAndSigner = async (
     walletClient: WalletClient & { account: Account },
@@ -80,6 +81,7 @@ const NewAccountButton = () => {
     const { authToken } = useAuthToken();
     const { settings } = useSettings();
     const { chain } = useNetwork();
+    const router = useRouter();
 
     const create = async () => {
         setIsLoading(true);
@@ -100,6 +102,7 @@ const NewAccountButton = () => {
                 error: "Failed to create account.",
             });
             setIsOpen(false);
+            router.refresh();
         } finally {
             setIsLoading(false);
         }
