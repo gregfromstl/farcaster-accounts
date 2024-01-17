@@ -73,7 +73,7 @@ function AccountFormModal({
     }, [username, displayName, bio, profileImage]);
 
     return (
-        <Dialog open={isOpen} onClose={close} size="3xl">
+        <Dialog open={isOpen} onClose={close} size="xl">
             <form
                 onSubmit={(e) => {
                     e.preventDefault();
@@ -82,22 +82,7 @@ function AccountFormModal({
             >
                 <DialogTitle>Edit Account</DialogTitle>
                 <DialogBody>
-                    <Fieldset
-                        aria-label="Account"
-                        className="grid grid-cols-1 lg:grid-cols-2 max-w-3xl mx-auto"
-                    >
-                        <FieldGroup className="py-8">
-                            <div className="w-72 h-72 rounded-full overflow-hidden relative bg-gray-100 cursor-pointer">
-                                {userAccount.profile_image && (
-                                    <Image
-                                        src={userAccount.profile_image}
-                                        alt="Profile Image"
-                                        fill
-                                        className="object-cover object-center"
-                                    />
-                                )}
-                            </div>
-                        </FieldGroup>
+                    <Fieldset aria-label="Account">
                         <FieldGroup>
                             <Field>
                                 <Label>Username</Label>
@@ -108,6 +93,31 @@ function AccountFormModal({
                                         setUsername(e.target.value.slice(1))
                                     }
                                 />
+                            </Field>
+
+                            <Field>
+                                <Label>Profile Image</Label>
+                                <div className="flex items-center gap-2">
+                                    <div className="w-10 h-10 rounded-full overflow-hidden relative bg-gray-100 cursor-pointer">
+                                        {profileImage &&
+                                            profileImage.length > 0 && (
+                                                <Image
+                                                    src={profileImage}
+                                                    alt="Profile Image"
+                                                    fill
+                                                    className="object-cover object-center"
+                                                />
+                                            )}
+                                    </div>
+                                    <Input
+                                        name="image"
+                                        className="flex-1"
+                                        value={profileImage}
+                                        onChange={(e) =>
+                                            setProfileImage(e.target.value)
+                                        }
+                                    />
+                                </div>
                             </Field>
                             <Field>
                                 <Label>Display Name</Label>
