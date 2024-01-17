@@ -6,8 +6,9 @@ import {
     FarcasterUserAccount,
 } from "@/types/farcaster-account.types";
 import useNeynarClient from "./useNeynarClient";
+import { useRouter } from "next/navigation";
 
-export default function useSettings() {
+export default function useAccounts() {
     const { authToken } = useAuthToken();
     const { client: neynar } = useNeynarClient();
     const [loading, setLoading] = useState<boolean>(false);
@@ -16,6 +17,7 @@ export default function useSettings() {
     const [userAccounts, setUserAccounts] = useState<FarcasterUserAccount[]>(
         []
     );
+    const router = useRouter();
 
     const refreshUserAccounts = async () => {
         const result = await neynar?.fetchBulkUsers(
@@ -57,6 +59,18 @@ export default function useSettings() {
         }
     };
 
+    const updateUser = async (account: FarcasterUserAccount) => {
+        if (!account?.signer_uuid) throw new Error("No Neynar API key");
+        const result = await neynar?.updateUser(account.signer_uuid, {
+            username: account.username,
+            displayName: account.display_name,
+            pfpUrl: account.profile_image,
+            bio: account.bio,
+        });
+        if (!result) throw new Error("Failed to update user");
+        router.refresh();
+    };
+
     useEffect(() => {
         refreshAccounts();
     }, [authToken]);
@@ -65,5 +79,5 @@ export default function useSettings() {
         refreshUserAccounts();
     }, [accounts]);
 
-    return { loading, error, accounts, userAccounts };
+    return { loading, error, accounts, userAccounts, updateUser };
 }

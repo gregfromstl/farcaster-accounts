@@ -12,6 +12,9 @@ import {
     DialogBody,
     DialogTitle,
 } from "@components/dialog";
+import useNeynarClient from "@/hooks/useNeynarClient";
+import useAccounts from "@/hooks/useAccounts";
+import toast from "react-hot-toast";
 
 function AccountFormModal({
     userAccount,
@@ -27,6 +30,8 @@ function AccountFormModal({
     const [bio, setBio] = useState(userAccount.bio);
     const [profileImage, setProfileImage] = useState(userAccount.profile_image);
     const [hasChanges, setHasChanges] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const { updateUser } = useAccounts();
 
     const cancel = () => {
         setUsername(userAccount.username);
@@ -34,6 +39,26 @@ function AccountFormModal({
         setBio(userAccount.bio);
         setProfileImage(userAccount.profile_image);
         close();
+    };
+
+    const updateAccount = async () => {
+        setLoading(true);
+        try {
+            const promise = updateUser({
+                ...userAccount,
+                username,
+                display_name: displayName,
+                bio,
+                profile_image: profileImage,
+            });
+            await toast.promise(promise, {
+                loading: "Updating account...",
+                success: "Account updated!",
+                error: "Failed to update account.",
+            });
+        } finally {
+            setLoading(false);
+        }
     };
 
     useEffect(() => {
@@ -47,9 +72,9 @@ function AccountFormModal({
 
     return (
         <Dialog open={isOpen} onClose={close} size="3xl">
-            <DialogTitle>Edit Account</DialogTitle>
-            <DialogBody>
-                <form action="/orders" method="POST">
+            <form onSubmit={updateAccount}>
+                <DialogTitle>Edit Account</DialogTitle>
+                <DialogBody>
                     <Fieldset
                         aria-label="Account"
                         className="grid grid-cols-1 lg:grid-cols-2 max-w-3xl mx-auto"
@@ -97,16 +122,16 @@ function AccountFormModal({
                             </Field>
                         </FieldGroup>
                     </Fieldset>
-                </form>
-            </DialogBody>
-            <DialogActions>
-                <Button plain onClick={cancel} href="/">
-                    Cancel
-                </Button>
-                <Button type="submit" disabled={!hasChanges}>
-                    Save
-                </Button>
-            </DialogActions>
+                </DialogBody>
+                <DialogActions>
+                    <Button plain onClick={cancel} disabled={loading} href="/">
+                        Cancel
+                    </Button>
+                    <Button type="submit" disabled={!hasChanges || loading}>
+                        Save
+                    </Button>
+                </DialogActions>
+            </form>
         </Dialog>
     );
 }
