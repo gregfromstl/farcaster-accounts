@@ -62,7 +62,6 @@ export default async function registerFName(
     const result = await axios.post("https://fnames.farcaster.xyz/transfers", {
         ...registration,
     });
-    console.log(result);
 
     return result.data;
 }
