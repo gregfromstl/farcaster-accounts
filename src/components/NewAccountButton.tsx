@@ -121,8 +121,10 @@ const NewAccountButton = ({ settings }: { settings?: Settings }) => {
     const create = async () => {
         if (!walletClient) throw new Error("Wallet client not found");
         if (!authToken || !user) throw new Error("User not logged in");
-        if (!settings?.neynar_api_key)
-            throw new Error("Neynar API key not set");
+        if (!settings?.neynar_api_key) {
+            toast.error("Neynar API key not found");
+            return;
+        }
 
         const promise = createAccountAndSigner(
             walletClient,
@@ -171,8 +173,6 @@ const NewAccountButton = ({ settings }: { settings?: Settings }) => {
                                 setIsLoading(true);
                                 try {
                                     await create();
-                                } catch (e: any) {
-                                    toast.error(e.message);
                                 } finally {
                                     setIsLoading(false);
                                 }
