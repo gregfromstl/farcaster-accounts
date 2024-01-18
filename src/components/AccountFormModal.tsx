@@ -14,7 +14,7 @@ import {
 } from "@components/dialog";
 import useAccounts from "@/hooks/useAccounts";
 import toast from "react-hot-toast";
-import registerFName from "@/util/registerFName";
+import { getFName, registerFName } from "@/util/fname";
 
 function AccountFormModal({
     userAccount,
@@ -52,7 +52,7 @@ function AccountFormModal({
                 await toast.promise(registerFName(userAccount, username), {
                     loading: "Registering new fname...",
                     success: "fname registered",
-                    error: "Failed to register fname, try another.",
+                    error: (err) => err.message,
                 });
             }
             const promise = updateUser(userAccount.signer_uuid, {
