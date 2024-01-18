@@ -14,6 +14,7 @@ import {
 } from "@components/dialog";
 import useAccounts from "@/hooks/useAccounts";
 import toast from "react-hot-toast";
+import registerFName from "@/util/registerFName";
 
 function AccountFormModal({
     userAccount,
@@ -45,19 +46,21 @@ function AccountFormModal({
     const updateAccount = async () => {
         setLoading(true);
         try {
+            if (!username) throw new Error("Username cannot be empty");
             if (!userAccount.signer_uuid) throw new Error("No signer UUID");
+            if (username !== userAccount.username) {
+                await toast.promise(registerFName(userAccount, username), {
+                    loading: "Registering new fname...",
+                    success: "fname registered",
+                    error: "Failed to register fname, try another.",
+                });
+            }
             const promise = updateUser(userAccount.signer_uuid, {
                 username:
                     username !== userAccount.username ? username : undefined,
-                displayName:
-                    displayName !== userAccount.display_name
-                        ? displayName
-                        : undefined,
-                bio: bio !== userAccount.bio ? bio : undefined,
-                pfpUrl:
-                    profileImage !== userAccount.profile_image
-                        ? profileImage
-                        : undefined,
+                displayName,
+                bio,
+                pfpUrl: profileImage,
             });
             await toast.promise(promise, {
                 loading: "Updating account...",
