@@ -45,12 +45,19 @@ function AccountFormModal({
     const updateAccount = async () => {
         setLoading(true);
         try {
-            const promise = updateUser({
-                ...userAccount,
-                username,
-                display_name: displayName,
-                bio,
-                profile_image: profileImage,
+            if (!userAccount.signer_uuid) throw new Error("No signer UUID");
+            const promise = updateUser(userAccount.signer_uuid, {
+                username:
+                    username !== userAccount.username ? username : undefined,
+                displayName:
+                    displayName !== userAccount.display_name
+                        ? displayName
+                        : undefined,
+                bio: bio !== userAccount.bio ? bio : undefined,
+                pfpUrl:
+                    profileImage !== userAccount.profile_image
+                        ? profileImage
+                        : undefined,
             });
             await toast.promise(promise, {
                 loading: "Updating account...",

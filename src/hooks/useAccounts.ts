@@ -59,15 +59,18 @@ export default function useAccounts() {
         }
     };
 
-    const updateUser = async (account: FarcasterUserAccount) => {
-        if (!account?.signer_uuid) throw new Error("No Neynar API key");
-        const result = await neynar?.updateUser(account.signer_uuid, {
-            username: account.username,
-            displayName: account.display_name,
-            pfpUrl: account.profile_image,
-            bio: account.bio,
-        });
-        if (!result) throw new Error("Failed to update user");
+    const updateUser = async (
+        signerUUID: string,
+        accountChanges: {
+            username?: string;
+            bio?: string;
+            displayName?: string;
+            pfpUrl?: string;
+        }
+    ) => {
+        const result = await neynar?.updateUser(signerUUID, accountChanges);
+        if (!result || !result.success)
+            throw new Error("Failed to update user");
         setTimeout(() => {
             router.refresh();
         }, 500);
