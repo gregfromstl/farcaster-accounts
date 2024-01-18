@@ -43,10 +43,12 @@ const createAccountAndSigner = async (
 ): Promise<FarcasterAccount> => {
     if (!walletClient.account)
         throw new Error("Account not found on wallet client");
+
+    // generate a new wallet
     const { address, privateKey } = generateAddress();
-    console.log(address, privateKey);
     const account = privateKeyToAccount(privateKey);
 
+    // transfer the cost to register a farcaster account to the new wallet
     const price = await getAccountPrice();
     const txHash = await walletClient.sendTransaction({
         account: walletClient.account,
@@ -57,15 +59,20 @@ const createAccountAndSigner = async (
     await publicClient.waitForTransactionReceipt({
         hash: txHash,
     });
+
+    // register a new account with farcaster
     const fid = await generateFarcasterAccount(account);
-    console.log(fid);
+
+    // wait 10 seconds so Neynar can index the new account
+    await new Promise((resolve) => setTimeout(resolve, 10000));
+
+    // generate the signer
     const signerUUID = await generateApprovedNeynarSigner(
         fid,
         account,
         walletClient,
         neynarApiKey
     );
-    console.log(signerUUID);
 
     const farcasterAccount = {
         user: user.id,
