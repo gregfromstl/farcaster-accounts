@@ -15,9 +15,6 @@ export const metadata: Metadata = {
     title: "Farcaster Accounts",
     description:
         "A place to create and modify Farcaster accounts for bots, brands, and more.",
-    icons: {
-        icon: "https://emojicdn.elk.sh/%F0%9F%A4%9F",
-    },
 };
 
 export default function RootLayout({
