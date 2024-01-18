@@ -58,8 +58,7 @@ function AccountFormModal({
                 });
             }
             const promise = updateUser(userAccount.signer_uuid, {
-                username:
-                    username !== userAccount.username ? username : undefined,
+                username,
                 displayName,
                 bio,
                 pfpUrl: profileImage,
