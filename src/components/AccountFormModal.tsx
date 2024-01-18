@@ -14,7 +14,7 @@ import {
 } from "@components/dialog";
 import useAccounts from "@/hooks/useAccounts";
 import toast from "react-hot-toast";
-import { getFName, registerFName } from "@/util/fname";
+import { registerFName } from "@/util/fname";
 
 function AccountFormModal({
     userAccount,
@@ -25,8 +25,10 @@ function AccountFormModal({
     isOpen: boolean;
     close: () => void;
 }) {
-    const [username, setUsername] = useState(userAccount.username);
-    const [displayName, setDisplayName] = useState(userAccount.display_name);
+    const [username, setUsername] = useState(userAccount.username ?? undefined);
+    const [displayName, setDisplayName] = useState(
+        userAccount.display_name ?? undefined
+    );
     const [bio, setBio] = useState(userAccount.bio ?? undefined);
     const [profileImage, setProfileImage] = useState(
         userAccount.profile_image ?? undefined

@@ -32,6 +32,9 @@ export async function getFName(
     const transfers = result.data.transfers.filter(
         (t: any) => t.to === farcasterAccount.fid
     );
+
+    if (transfers.length === 0) return undefined;
+
     const fname = transfers[transfers.length - 1].username;
 
     return fname;
