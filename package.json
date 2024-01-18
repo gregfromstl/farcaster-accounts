@@ -30,6 +30,7 @@
         "react": "^18",
         "react-dom": "^18",
         "react-hot-toast": "^2.4.1",
+        "react-spinners": "^0.13.8",
         "tls": "^0.0.1",
         "viem": "^2.0.6",
         "wagmi": "1.4.13",
