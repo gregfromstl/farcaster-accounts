@@ -106,7 +106,6 @@ export async function registerFName(
     fname: string
 ) {
     const existingName = await getFName(farcasterAccount);
-    console.log("existingName", existingName);
     await new Promise((resolve) => setTimeout(resolve, 1000));
     if (existingName) {
         await unregisterFName(farcasterAccount, existingName);
