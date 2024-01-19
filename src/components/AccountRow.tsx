@@ -6,9 +6,11 @@ import AccountFormModal from "./AccountFormModal";
 import toast from "react-hot-toast";
 import { ClipboardDocumentIcon } from "@heroicons/react/24/solid";
 import Image from "next/image";
+import ExportAccountModal from "./ExportAccountModal";
 
 function AccountRow({ userAccount }: { userAccount: FarcasterUserAccount }) {
     const [isOpen, setIsOpen] = useState(false);
+    const [exportIsOpen, setExportIsOpen] = useState(false);
 
     return (
         <>
@@ -67,7 +69,25 @@ function AccountRow({ userAccount }: { userAccount: FarcasterUserAccount }) {
                         )}
                     </div>
                 </TableCell>
+                <TableCell>
+                    {(userAccount.mnemonic || userAccount.private_key) && (
+                        <div
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                setExportIsOpen(true);
+                            }}
+                            className="text-right underline hover:text-zinc-500 cursor-pointer"
+                        >
+                            Export
+                        </div>
+                    )}
+                </TableCell>
             </TableRow>
+            <ExportAccountModal
+                account={userAccount}
+                isOpen={exportIsOpen}
+                close={() => setExportIsOpen(false)}
+            />
             <AccountFormModal
                 isOpen={isOpen}
                 userAccount={userAccount}

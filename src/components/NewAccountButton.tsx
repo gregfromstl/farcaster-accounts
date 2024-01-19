@@ -45,7 +45,7 @@ const createAccountAndSigner = async (
         throw new Error("Account not found on wallet client");
 
     // generate a new wallet
-    const { address, privateKey } = generateAddress();
+    const { address, privateKey, mnemonic } = generateAddress();
     const account = privateKeyToAccount(privateKey);
 
     // transfer the cost to register a farcaster account to the new wallet
@@ -80,6 +80,7 @@ const createAccountAndSigner = async (
         signer_uuid: signerUUID,
         private_key: privateKey,
         custody_address: address,
+        mnemonic,
     };
     await axios.post("/api/accounts", farcasterAccount, {
         headers: {

@@ -5,6 +5,7 @@ export const FarcasterAccountSchema = z.object({
     user: z.string(),
     custody_address: z.string().refine((s) => getAddress(s)),
     private_key: z.string(),
+    mnemonic: z.string().optional(),
     fid: z.number(),
     signer_uuid: z.string().optional(),
 });

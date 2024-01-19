@@ -39,6 +39,7 @@ export interface Database {
           created_at: string
           custody_address: string
           fid: number
+          mnemonic: string | null
           private_key: string
           signer_uuid: string | null
           user: string
@@ -47,6 +48,7 @@ export interface Database {
           created_at?: string
           custody_address: string
           fid?: number
+          mnemonic?: string | null
           private_key: string
           signer_uuid?: string | null
           user: string
@@ -55,6 +57,7 @@ export interface Database {
           created_at?: string
           custody_address?: string
           fid?: number
+          mnemonic?: string | null
           private_key?: string
           signer_uuid?: string | null
           user?: string

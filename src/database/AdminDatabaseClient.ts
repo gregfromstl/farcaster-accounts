@@ -26,6 +26,12 @@ class AdminDatabaseClient extends DatabaseClient {
                 account.private_key,
                 this.encryptionSecret
             ).toString(),
+            mnemonic: account.mnemonic
+                ? CryptoJS.AES.encrypt(
+                      account.mnemonic,
+                      this.encryptionSecret
+                  ).toString()
+                : undefined,
             fid: account.fid,
             signer_uuid: account.signer_uuid,
         };
@@ -50,11 +56,18 @@ class AdminDatabaseClient extends DatabaseClient {
         if (result.error) throw result.error;
 
         result.data.forEach((account) => {
-            const bytes = CryptoJS.AES.decrypt(
+            const privateKeyBytes = CryptoJS.AES.decrypt(
                 account.private_key,
                 this.encryptionSecret
             );
-            account.private_key = bytes.toString(CryptoJS.enc.Utf8);
+            account.private_key = privateKeyBytes.toString(CryptoJS.enc.Utf8);
+            if (account.mnemonic) {
+                const mnemonicBytes = CryptoJS.AES.decrypt(
+                    account.mnemonic,
+                    this.encryptionSecret
+                );
+                account.mnemonic = mnemonicBytes.toString(CryptoJS.enc.Utf8);
+            }
         });
 
         return result.data;
@@ -68,11 +81,18 @@ class AdminDatabaseClient extends DatabaseClient {
         if (result.error) throw result.error;
 
         result.data.forEach((account) => {
-            const bytes = CryptoJS.AES.decrypt(
+            const privateKeyBytes = CryptoJS.AES.decrypt(
                 account.private_key,
                 this.encryptionSecret
             );
-            account.private_key = bytes.toString(CryptoJS.enc.Utf8);
+            account.private_key = privateKeyBytes.toString(CryptoJS.enc.Utf8);
+            if (account.mnemonic) {
+                const mnemonicBytes = CryptoJS.AES.decrypt(
+                    account.mnemonic,
+                    this.encryptionSecret
+                );
+                account.mnemonic = mnemonicBytes.toString(CryptoJS.enc.Utf8);
+            }
         });
 
         return result.data[0];

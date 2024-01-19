@@ -23,6 +23,7 @@ async function AccountsTable({
                         <TableHeader>FID</TableHeader>
                         <TableHeader>Custody Address</TableHeader>
                         <TableHeader>Neynar Signer</TableHeader>
+                        <TableHeader></TableHeader>
                     </TableRow>
                 </TableHead>
                 <TableBody>
