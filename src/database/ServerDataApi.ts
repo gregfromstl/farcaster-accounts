@@ -69,6 +69,7 @@ class ServerDataApi {
     ): Promise<FarcasterUserAccount[]> {
         if (!this.authToken) return [];
         const accounts = await this.getAccounts();
+        if (accounts.length === 0) return [];
 
         const neynar = getNeynarClient(neynarApiKey);
         const userAccounts = await neynar.fetchBulkUsers(
