@@ -1,6 +1,5 @@
-"use client";
+import Loader from "@/components/Loader";
 import NewAccountButton from "@/components/NewAccountButton";
-import { GridLoader } from "react-spinners";
 
 export default async function LoadingHome() {
     return (
@@ -12,10 +11,7 @@ export default async function LoadingHome() {
                 </div>
             </div>
             <div className="w-full py-24 flex-col gap-4 flex items-center justify-center">
-                <GridLoader color="#cccccc" />
-                <span className="text-lg font-semibold text-[#cccccc]">
-                    Loading...
-                </span>
+                <Loader />
             </div>
         </div>
     );
