@@ -54,6 +54,8 @@ const createAccountAndSigner = async (
     await publicClient.waitForTransactionReceipt({
         hash: txHash,
     });
+    // pause for balance to update
+    await new Promise((resolve) => setTimeout(resolve, 3000));
 
     try {
         // register a new account with farcaster
@@ -91,7 +93,7 @@ const createAccountAndSigner = async (
         );
         toast.error(e.message);
         console.error(e.message);
-        await new Promise((resolve) => setTimeout(resolve, 5000));
+
         await refund(account, walletClient.account.address);
         throw e;
     }
