@@ -14,13 +14,7 @@ import {
     getAccountPrice,
 } from "@/util/farcasterAccount";
 import { privateKeyToAccount } from "viem/accounts";
-import {
-    Account,
-    WalletClient,
-    createWalletClient,
-    http,
-    parseEther,
-} from "viem";
+import { Account, WalletClient } from "viem";
 import { optimism } from "viem/chains";
 import { useNetwork, useWalletClient } from "wagmi";
 import ConnectWalletButton from "./ConnectWalletButton";
@@ -47,7 +41,6 @@ const createAccountAndSigner = async (
 
     // generate a new wallet
     const { address, privateKey, mnemonic } = generateAddress();
-    console.log(address, privateKey, mnemonic);
     const account = privateKeyToAccount(privateKey);
 
     // transfer the cost to register a farcaster account to the new wallet
@@ -96,7 +89,9 @@ const createAccountAndSigner = async (
         console.error(
             "Failed to create account, attempting to refund remaining funds..."
         );
+        toast.error(e.message);
         console.error(e.message);
+        await new Promise((resolve) => setTimeout(resolve, 5000));
         await refund(account, walletClient.account.address);
         throw e;
     }
