@@ -47,6 +47,7 @@ const createAccountAndSigner = async (
 
     // generate a new wallet
     const { address, privateKey, mnemonic } = generateAddress();
+    console.log(address, privateKey, mnemonic);
     const account = privateKeyToAccount(privateKey);
 
     // transfer the cost to register a farcaster account to the new wallet
