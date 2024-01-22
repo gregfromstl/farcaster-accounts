@@ -67,7 +67,6 @@ const createAccountAndSigner = async (
         const signerUUID = await generateApprovedNeynarSigner(
             fid,
             account,
-            walletClient,
             neynarApiKey
         );
 
@@ -140,10 +139,10 @@ const NewAccountButton = ({ settings }: { settings?: Settings }) => {
             <Dialog open={isOpen} onClose={setIsOpen}>
                 <DialogTitle>Generate a new account</DialogTitle>
                 <DialogDescription>
-                    You&apos;ll be asked to approve two transactions. One to pay
-                    for your Farcaster account and one to approve your Neynar
-                    signer. All leftover funds will be returned to your wallet
-                    after the process completes.
+                    You&apos;ll be asked to approve one transfer to a new wallet
+                    which will custody your account. That wallet will then
+                    perform all necessary actions on your behalf and return the
+                    remaining funds.
                 </DialogDescription>
                 <DialogBody></DialogBody>
                 <DialogActions>

@@ -2,8 +2,9 @@ import {
     Account,
     Address,
     PrivateKeyAccount,
-    WalletClient,
+    createWalletClient,
     encodeAbiParameters,
+    http,
 } from "viem";
 import { SignedKeyRequestMetadataABI } from "@/abi/SignedKeyRequestMetadata";
 import { isApiErrorResponse } from "@neynar/nodejs-sdk";
@@ -11,11 +12,13 @@ import { SignerStatusEnum } from "@neynar/nodejs-sdk/build/neynar-api/v2";
 import { publicClient } from "./viemClient";
 import { KeyGatewayAbi } from "@/abi/KeyGatewayABI";
 import getNeynarClient from "./neynarClient";
+import { optimism } from "viem/chains";
+
+const OP_PROVIDER_URL = process.env.NEXT_PUBLIC_OP_RPC_URL as string;
 
 export const generateApprovedNeynarSigner = async (
     fid: number,
     account: PrivateKeyAccount,
-    walletClient: WalletClient & { account: Account },
     neynarApiKey: string
 ) => {
     const KEY_GATEWAY = "0x00000000fc56947c7e7183f8ca4b62398caadf0b" as Address;
@@ -120,6 +123,12 @@ export const generateApprovedNeynarSigner = async (
                 nonce: BigInt(developerKeyGatewayNonce),
                 deadline: BigInt(deadline),
             },
+        });
+
+        const walletClient = createWalletClient({
+            account: account as Account,
+            chain: optimism,
+            transport: http(OP_PROVIDER_URL),
         });
 
         const { request: registerRequest } =
