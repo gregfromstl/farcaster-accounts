@@ -106,6 +106,11 @@ export async function registerFName(
     fname: string
 ) {
     const existingName = await getFName(farcasterAccount);
+    // if they already have this name assigned something is out of whack with neynar, so just pass through so it can properly update
+    if (existingName && existingName === fname) {
+        return;
+    }
+
     await new Promise((resolve) => setTimeout(resolve, 1000));
     if (existingName) {
         await unregisterFName(farcasterAccount, existingName);
