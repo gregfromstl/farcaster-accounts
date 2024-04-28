@@ -92,7 +92,6 @@ class ServerDataApi {
                 };
             });
         } catch (e: any) {
-            toast.error("Failed to connect to Neynar");
             return [];
         }
     }
