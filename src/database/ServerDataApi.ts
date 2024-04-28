@@ -6,6 +6,7 @@ import { Settings } from "@/types/settings.types";
 import { cookies } from "next/headers";
 import request from "@/util/request";
 import getNeynarClient from "@/util/neynarClient";
+import toast from "react-hot-toast";
 
 class ServerDataApi {
     private authToken: string | undefined = undefined;
@@ -68,27 +69,32 @@ class ServerDataApi {
         neynarApiKey: string
     ): Promise<FarcasterUserAccount[]> {
         if (!this.authToken) return [];
-        const accounts = await this.getAccounts();
-        if (accounts.length === 0) return [];
+        try {
+            const accounts = await this.getAccounts();
+            if (accounts.length === 0) return [];
 
-        const neynar = getNeynarClient(neynarApiKey);
-        const userAccounts = await neynar.fetchBulkUsers(
-            accounts.map((account) => account.fid),
-            {}
-        );
-        return userAccounts.users.map((user) => {
-            const account = accounts.find(
-                (account) => account.fid === user.fid
+            const neynar = getNeynarClient(neynarApiKey);
+            const userAccounts = await neynar.fetchBulkUsers(
+                accounts.map((account) => account.fid),
+                {}
             );
-            if (!account) throw new Error("Account not found");
-            return {
-                ...account,
-                username: user.username,
-                profile_image: user.pfp_url,
-                display_name: user.display_name,
-                bio: user.profile.bio.text,
-            };
-        });
+            return userAccounts.users.map((user) => {
+                const account = accounts.find(
+                    (account) => account.fid === user.fid
+                );
+                if (!account) throw new Error("Account not found");
+                return {
+                    ...account,
+                    username: user.username,
+                    profile_image: user.pfp_url,
+                    display_name: user.display_name,
+                    bio: user.profile.bio.text,
+                };
+            });
+        } catch (e: any) {
+            toast.error("Failed to connect to Neynar");
+            return [];
+        }
     }
 }
 export default () => new ServerDataApi();
